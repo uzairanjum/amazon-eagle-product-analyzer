@@ -130,7 +130,7 @@ async def shutdown_event():
 
 
 # ============================================================================
-# ERROR HANDLERS
+# ERROR HANDLERS -> Implement is V2
 # ============================================================================
 
 # IMPROVEMENT: Add custom error handlers

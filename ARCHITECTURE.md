@@ -35,44 +35,44 @@ Decision engine for Amazon product opportunities that analyzes historical data t
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         DATA FLOW                                    │
+│                         DATA FLOW                                   │
 └─────────────────────────────────────────────────────────────────────┘
 
   POST /analyze (ASINs)
          │
          ▼
   ┌─────────────────────────────────────────────────────────────┐
-  │  Keepa Client                                                 │
-  │  • Fetch product data from Keepa API                         │
-  │  • Store raw JSON                                            │
-  └────────────────────────────┬───────────────────────────────────┘
+  │  Keepa Client                                               │
+  │  • Fetch product data from Keepa API                        │
+  │  • Store raw JSON                                           │
+  └────────────────────────────┬────────────────────────────────┘
                                 │
          ┌──────────────────────┴──────────────────────┐
-         │                                              │
-         ▼                                              ▼
-  ┌────────────────────────┐              ┌────────────────────────┐
-  │  Time-Series Decoder  │              │  Database              │
-  │  • Decode Keepa format │              │  • asin (metadata)     │
-  │  • Normalize to daily  │              │  • asin_snapshot_daily │
-  │  • Calculate metrics  │              │  • opportunity_candidate│
-  └───────────┬────────────┘              │  • forecast_plan      │
-              │                           └────────────────────────┘
+         │                                             │
+         ▼                                             ▼
+  ┌────────────────────────┐              ┌─────────────────────────┐
+  │  Time-Series Decoder   │              │ Database                │
+  │  • Decode Keepa format │              │  • asin (metadata)      │
+  │  • Normalize to daily  │              │  • asin_snapshot_daily  │
+  │  • Calculate metrics   │              │  • opportunity_candidate│
+  └───────────┬────────────┘              │  • forecast_plan        │
+              │                           └─────────────────────────┘
               ▼
   ┌─────────────────────────────────────────────────────────────┐
-  │  Services Pipeline                                           │
+  │  Services Pipeline                                          │
   │  ┌──────────────┐ ┌──────────────┐ ┌──────────────────────┐ │
   │  │ Scoring      │ │ Forecasting  │ │ Economics            │ │
   │  │ - Demand     │ │ - Launch     │ │ - Revenue            │ │
   │  │ - BSR        │ │ - Growth     │ │ - Costs              │ │
-  │  │ - Reviews    │ │ - Mature     │ │ - Margin Check (10%)│ │
+  │  │ - Reviews    │ │ - Mature     │ │ - Margin Check (10%) │ │
   │  │ - Sellers    │ │              │ │                      │ │
   │  └──────────────┘ └──────────────┘ └──────────────────────┘ │
-  └────────────────────────────┬───────────────────────────────────┘
-                                │
-                                ▼
+  └────────────────────────────┬────────────────────────────────┘
+                               │
+                               ▼
   ┌─────────────────────────────────────────────────────────────┐
-  │  Ranking + Output                                            │
-  │  • Filter: margin >= 10%                                     │
+  │  Ranking + Output                                           │
+  │  • Filter: margin >= 10%                                    │
   │  • Sort: by score                                           │
   │  • Return: Top 5                                            │
   └─────────────────────────────────────────────────────────────┘
